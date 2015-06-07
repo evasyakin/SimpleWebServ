@@ -14,7 +14,7 @@
 #define Header(...) {sprintf(tmp,__VA_ARGS__);strcat(head,tmp);}
 #define Content(...) {sprintf(tmp,__VA_ARGS__);strcat(content,tmp);}
 
-// Main
+// ----- Server -----
 
 struct header_s {
 	char method[4];
@@ -23,10 +23,12 @@ struct header_s {
 	char host[64];
 	char userAgent[128];
 	char accept[64];
-	char connection[64];
+	char acceptLanguage[16];
+	char acceptEncoding[16];
 	char referrer[64];
-	int contentLength;
+	char connection[64];
 	char contentType[16];
+	int contentLength;
 	char cookie[128];
 	char cacheControl[32];
 };
@@ -35,8 +37,9 @@ typedef struct header_s header_t;
 
 int main(void);
 void Work(int sock);
+void HttpParse(char buf[512]);
 
-// Conf
+// ----- Conf -----
 
 #define CONF_DEFAULT_PATH "../config/httpd.conf.default"
 #define CONF_PATH "../config/httpd.conf"
@@ -59,7 +62,7 @@ void ConfParse(char filepath[MAX_STRING_LEN]);
 
 conf_t conf;
 
-// Logs
+// ----- Logs -----
 
 
 #define ALL_LOGS "../logs/all.log"
