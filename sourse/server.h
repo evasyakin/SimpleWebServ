@@ -11,6 +11,9 @@
 
 #define MAX_STRING_LEN 80
 
+#define Header(...) {sprintf(tmp,__VA_ARGS__);strcat(head,tmp);}
+#define Content(...) {sprintf(tmp,__VA_ARGS__);strcat(content,tmp);}
+
 // Main
 
 struct header_s {
@@ -21,7 +24,7 @@ struct header_s {
 	char userAgent[128];
 	char accept[64];
 	char connection[64];
-	char referer[64];
+	char referrer[64];
 	int contentLength;
 	char contentType[16];
 	char cookie[128];
@@ -30,7 +33,8 @@ struct header_s {
 
 typedef struct header_s header_t;
 
-void main();
+int main(void);
+void Work(int sock);
 
 // Conf
 

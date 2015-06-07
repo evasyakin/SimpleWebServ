@@ -6,8 +6,6 @@
 
 #include "server.h"
 
-char msg[MAX_STRING_LEN];
-
 void AddLog(char type[MAX_STRING_LEN], char msg[MAX_STRING_LEN]){
 	char str[MAX_STRING_LEN];
 	sprintf(str, "%s: %s\n", type, msg);

@@ -1,0 +1,10 @@
+# Файл конфигурации
+# LoadModule php_module "/home/PROJECTS/http-serv/php"
+
+ServName = localhost
+Port = 80
+ServDir = /home/PROJECTS/http-serv
+LogsDir = http-serv/logs
+ServDocs = www
+ErrDocs = Errors
+AdminEmail = evasyakin@mail.ru
