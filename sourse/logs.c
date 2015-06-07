@@ -4,7 +4,7 @@
 Добавление лога, просмотр списка логов. Удаление списка логов
 */
 
-#include "logs.h"
+#include "server.h"
 
 char msg[MAX_STRING_LEN];
 
@@ -42,7 +42,7 @@ void ViewLogs(){
 void DropLogs(){
 	FILE *file = fopen(ALL_LOGS,"wb");
 	if(file == NULL){
-		AddLog("Error","Не могу открыть файл ALL_LOG", );
+		AddLog("Error","Не могу открыть файл ALL_LOG");
 	}
 	else{
 		fclose(file);

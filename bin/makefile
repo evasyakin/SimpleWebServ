@@ -1,2 +1,2 @@
-all: ../sourse/conf.c ../sourse/logs.c ../sourse/server.c
-	gcc -o httpd ../sourse/server.c ../sourse/conf.c ../sourse/logs.c
+httpd: ../sourse/server.c ../sourse/conf.c ../sourse/logs.c
+	gcc -c httpd ../sourse/server.c ../sourse/conf.c ../sourse/logs.c
