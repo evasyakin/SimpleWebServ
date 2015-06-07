@@ -38,8 +38,8 @@ void Work(int sock);
 
 // Conf
 
-#define CONF_DEFAULT_PATH "conf/httpd.conf.default"
-#define CONF_PATH "conf/httpd.conf"
+#define CONF_DEFAULT_PATH "../config/httpd.conf.default"
+#define CONF_PATH "../config/httpd.conf"
 
 struct conf_s{
 	char servName[MAX_STRING_LEN];
@@ -57,11 +57,13 @@ typedef struct conf_s conf_t;
 void Conf();
 void ConfParse(char filepath[MAX_STRING_LEN]);
 
+conf_t conf;
+
 // Logs
 
 
-#define ALL_LOGS "logs/all.log"
-#define CONNECTS "logs/connects.log"
+#define ALL_LOGS "../logs/all.log"
+#define CONNECTS "../logs/connects.log"
 
 void AddLog(char type[MAX_STRING_LEN], char msg[MAX_STRING_LEN]);
 void ViewLogs();

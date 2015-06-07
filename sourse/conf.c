@@ -6,8 +6,6 @@
 
 #include "server.h"
 
-conf_t conf;
-
 void Conf(){
 	ConfParse(CONF_DEFAULT_PATH);
 	ConfParse(CONF_PATH);

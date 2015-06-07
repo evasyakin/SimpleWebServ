@@ -4,7 +4,6 @@ Main file
 
 #include "server.h"
 
-conf_t conf;
 char tmp[4096];
 char output[4352];
 char head[256];
@@ -15,7 +14,8 @@ int main(void){
 ----------------------------------------\n\
     Привет, я - Simple Web Server :)\n\
 ----------------------------------------\n");
-	int port, sock, retcode;
+	Conf(); // <- Заполняем струтуру conf
+	int sock, retcode;
 	struct sockaddr_in sa;
 	printf("Запускаю сервер на порту %d\n",conf.port);
 	sock = socket(PF_INET,SOCK_STREAM,IPPROTO_TCP);
