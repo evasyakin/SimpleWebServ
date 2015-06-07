@@ -25,25 +25,25 @@ void ConfParse(char filepath[MAX_STRING_LEN]){
 			*comment_pos = '\0';
 		// printf("%s",str);
 		if(strstr(str, "ServName")){
-			sscanf(str,"ServName = %s", conf.ServName);
+			sscanf(str,"ServName = %s", conf.servName);
 		}
 		if(strstr(str,"Port")){
-			sscanf(str,"Port = %d", &conf.Port);
+			sscanf(str,"Port = %d", &conf.port);
 		}
 		if(strstr(str, "ServDir")){
-			sscanf(str,"ServDir = %s", conf.ServDir);
+			sscanf(str,"ServDir = %s", conf.servDir);
 		}
 		if(strstr(str, "LogsDir")){
-			sscanf(str,"LogsDir = %s", conf.LogsDir);
+			sscanf(str,"LogsDir = %s", conf.logsDir);
 		}
 		if(strstr(str, "ServDocs")){
-			sscanf(str,"ServDocs = %s", conf.ServDocs);
+			sscanf(str,"ServDocs = %s", conf.servDocs);
 		}
 		if(strstr(str, "ErrDocs")){
-			sscanf(str,"ErrDocs = %s", conf.ErrDocs);
+			sscanf(str,"ErrDocs = %s", conf.errDocs);
 		}
 		if(strstr(str, "AdminEmail")){
-			sscanf(str,"AdminEmail = %s", conf.AdminEmail);
+			sscanf(str,"AdminEmail = %s", conf.adminEmail);
 		}
 
 	}

@@ -3,14 +3,14 @@
 #define CONF_PATH "conf/httpd.conf"
 
 struct conf_s{
-	char ServName[MAX_STRING_LEN];
+	char servName[MAX_STRING_LEN];
 	int Port;
-	char ServDir[MAX_STRING_LEN];
-	char LogsDir[MAX_STRING_LEN];
-	char ServDocs[MAX_STRING_LEN];
-	char ErrDocs[MAX_STRING_LEN];
+	char servDir[MAX_STRING_LEN];
+	char logsDir[MAX_STRING_LEN];
+	char servDocs[MAX_STRING_LEN];
+	char errDocs[MAX_STRING_LEN];
 
-	char AdminEmail[MAX_STRING_LEN];
+	char adminEmail[MAX_STRING_LEN];
 };
 
 typedef struct conf_s conf_t;
