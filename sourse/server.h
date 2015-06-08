@@ -11,7 +11,7 @@
 
 #define MAX_STRING_LEN 80
 
-#define Header(...) {sprintf(tmp,__VA_ARGS__);strcat(head,tmp);}
+#define Header(...) {sprintf(tmp,__VA_ARGS__);strcat(header,tmp);}
 #define Content(...) {sprintf(tmp,__VA_ARGS__);strcat(content,tmp);}
 
 // ----- Server -----
@@ -19,25 +19,29 @@
 struct header_s {
 	char method[4];
 	char url[64];
+	char get[64];
 	char protocol[4];
 	char host[64];
 	char userAgent[128];
 	char accept[64];
 	char acceptLanguage[16];
 	char acceptEncoding[16];
-	char referrer[64];
+	char referer[64];
 	char connection[64];
-	char contentType[16];
+	char contentType[64];
 	int contentLength;
-	char cookie[128];
 	char cacheControl[32];
+	char cookie[128];
+	char post[64];
 };
 
 typedef struct header_s header_t;
 
 int main(void);
 void Work(int sock);
-void HttpParse(char buf[512]);
+void HeaderParse(char buf[512]);
+void HeaderFirstParse(char buf[512]);
+void HeaderSecondParse(char* str);
 
 // ----- Conf -----
 
@@ -63,7 +67,6 @@ void ConfParse(char filepath[MAX_STRING_LEN]);
 conf_t conf;
 
 // ----- Logs -----
-
 
 #define ALL_LOGS "../logs/all.log"
 #define CONNECTS "../logs/connects.log"

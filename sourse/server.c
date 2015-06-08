@@ -6,16 +6,16 @@ Main file
 
 char tmp[4096];
 char output[4352];
-char head[256];
+char header[256];
 char content[4096];
-header_t header;
+header_t incoming;
 
 int main(void){
 	printf("\
 ----------------------------------------\n\
     Привет, я - Simple Web Server :)\n\
 ----------------------------------------\n");
-	
+
 	Conf(); // <- Заполняем струтуру conf
 	int sock, retcode;
 	struct sockaddr_in serverAddr;
@@ -73,7 +73,7 @@ void Work(int sock){
 		char buf[512];
 		int len = read(sock2,buf,sizeof(buf));
 
-		HttpParse(buf);
+		HeaderParse(buf);
 
 		//
 		Content("<!DOCTYPE html><html><head><title>hello</title></head><body><h1>Hello, world!</h1>");
@@ -87,9 +87,9 @@ void Work(int sock){
 		Header("Server: C\n\n");
 		//
 		*output = 0;
-		strcat(output,head);
+		strcat(output,header);
 		strcat(output,content);
-		*content = *head = 0;
+		*content = *header = 0;
 		
 		write(sock2,output,strlen(output));
 		close(sock2);
@@ -97,12 +97,87 @@ void Work(int sock){
 		continue;
 	}
 }
-void HttpParse(char buf[512]){
+// ----- HeaderParse -----
+void HeaderParse(char buf[512]){
+	HeaderFirstParse(buf);
+	printf("Method: %s\n",incoming.method);
+	printf("Url: %s\n",incoming.url);
+	printf("Protocol: %s\n",incoming.protocol);
+	printf("Host: %s\n",incoming.host);
+	printf("U-A: %s\n",incoming.userAgent);
+	printf("Accept: %s\n",incoming.accept);
+	printf("Accept-Lang: %s\n",incoming.acceptLanguage);
+	printf("Accept-Enc: %s\n",incoming.acceptEncoding);
+	printf("Referer: %s\n",incoming.referer);
+	printf("Connection: %s\n",incoming.connection);
+	printf("Content-Type: %s\n",incoming.contentType);
+	printf("Content-Len: %d\n",incoming.contentLength);
+	printf("CahcheControl: %s\n",incoming.cacheControl);
+}
+void HeaderFirstParse(char buf[512]){
 	char* pBegin = buf;
 	char* pEnd = buf;
-	pEnd = strstr(pBegin,"\r\n");
-	printf(pBegin);
-	if(pEnd)
-		*(pEnd) = '\0';
+	int count = 0;
+	printf("-----\n%s\n-----\n",buf);
+	while(count < 20){
+		//printf("\n>>>>\nStart%d: %s\n", count, pBegin);
+		pEnd = strstr(pBegin,"\r\n");
+		if(pEnd)
+			*(pEnd) = '\0';
+		else{
+			pEnd = strstr(pBegin,"\n");
+			if(pEnd){
+				*(pEnd) = '\0';
+			}
+			else{
+				int len = strlen(pBegin);
+				if(len > 0)
+					pEnd = pBegin + len;
+				else
+					break;
+			}
+		}
+		//printf("Str%d: %s\n", count, pBegin);
+		HeaderSecondParse(pBegin);
+		pBegin = pEnd+2;
+		count++;
+	}
+}
+void HeaderSecondParse(char* str){
+	char* methodGET = strstr(str,"GET");
+	char* methodPOST = strstr(str,"POST");
+	if(methodGET != NULL || methodPOST != NULL){
+		sscanf(str,"%s %s %s",incoming.method,incoming.url,incoming.protocol);
 
+	}
+	if(strstr(str,"Host:")){
+		sscanf(str,"Host: %s",incoming.host);
+	}
+	else if(strstr(str,"User-Agent:")){
+		strcpy(incoming.userAgent, str+11);
+	}
+	else if(strstr(str,"Accept:")){
+		strcpy(incoming.accept, str+7);
+	}
+	else if(strstr(str,"Accept-Language:")){
+		strcpy(incoming.acceptLanguage, str+16);
+	}
+	else if(strstr(str,"Accept-Encoding:")){
+		strcpy(incoming.acceptEncoding, str+16);
+	}
+	else if(strstr(str,"Referer:")){
+		sscanf(str,"Referer: %s",incoming.referer);
+	}
+	else if(strstr(str,"Connection:")){
+		sscanf(str,"Connection: %s",incoming.connection);
+	}
+	else if(strstr(str,"Content-Type:")){
+		sscanf(str,"Content-Type: %s",incoming.contentType);
+	}
+	else if(strstr(str,"Content-Length:")){
+		sscanf(str,"Content-Length: %d",&incoming.contentLength);
+	}
+	else if(strstr(str,"Cache-Control:")){
+		sscanf(str,"Cache-Control: %s",incoming.cacheControl);
+	}
 }
