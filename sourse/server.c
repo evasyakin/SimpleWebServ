@@ -102,7 +102,7 @@ void HeaderParse(char buf[512]){
 	HeaderFirstParse(buf);
 	printf("Method: %s\n",incoming.method);
 	printf("Url: %s\n",incoming.url);
-	printf("Protocol: %s\n",incoming.protocol);
+	printf("HttpVer: %s\n",incoming.httpVer);
 	printf("Host: %s\n",incoming.host);
 	printf("U-A: %s\n",incoming.userAgent);
 	printf("Accept: %s\n",incoming.accept);
@@ -144,10 +144,8 @@ void HeaderFirstParse(char buf[512]){
 	}
 }
 void HeaderSecondParse(char* str){
-	char* methodGET = strstr(str,"GET");
-	char* methodPOST = strstr(str,"POST");
-	if(methodGET != NULL || methodPOST != NULL){
-		sscanf(str,"%s %s %s",incoming.method,incoming.url,incoming.protocol);
+	if(strstr(str,"HTTP")){
+		sscanf(str,"%s %s HTTP/%s",incoming.method,incoming.url,incoming.httpVer);
 
 	}
 	if(strstr(str,"Host:")){

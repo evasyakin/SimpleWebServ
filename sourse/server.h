@@ -20,7 +20,7 @@ struct header_s {
 	char method[4];
 	char url[64];
 	char get[64];
-	char protocol[4];
+	char httpVer[8];
 	char host[64];
 	char userAgent[128];
 	char accept[64];
