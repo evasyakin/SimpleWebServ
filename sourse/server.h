@@ -17,7 +17,7 @@
 // ----- Server -----
 
 struct header_s {
-	char method[4];
+	char method[8];
 	char url[64];
 	char get[64];
 	char httpVer[8];
