@@ -16,7 +16,7 @@
 
 // ----- Server -----
 
-struct header_s {
+struct query_s {
 	char method[8];
 	char url[64];
 	char get[64];
@@ -35,13 +35,13 @@ struct header_s {
 	char post[64];
 };
 
-typedef struct header_s header_t;
+typedef struct query_s query_t;
 
 int main(void);
 void Work(int sock);
-void HeaderParse(char buf[512]);
-void HeaderFirstParse(char buf[512]);
-void HeaderSecondParse(char* str);
+void QueryParse(char buf[512]);
+void QueryFirstParse(char buf[512]);
+void QuerySecondParse(char* str);
 
 // ----- Conf -----
 

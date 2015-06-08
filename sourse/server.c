@@ -1,3 +1,4 @@
+
 /*
 Main file
 */
@@ -8,7 +9,7 @@ char tmp[4096];
 char output[4352];
 char header[256];
 char content[4096];
-header_t incoming;
+query_t query;
 
 int main(void){
 	printf("\
@@ -73,11 +74,13 @@ void Work(int sock){
 		char buf[512];
 		int len = read(sock2,buf,sizeof(buf));
 
-		HeaderParse(buf);
+		QueryParse(buf);
 
 		//
 		Content("<!DOCTYPE html><html><head><title>hello</title></head><body><h1>Hello, world!</h1>");
-		Content("<form method='POST' action=''><p><label>Ваше имя:<br><input type='text' name='name'></label></p>" \
+		Content("<form method='POST' action=''>" \
+			"<p><label>Ваше имя:<br><input type='text' name='name'></label></p>" \
+			"<p><label>Ваш e-mail:<br><input type='text' name='email'></label></p>" \
 		"<p><input type='submit' value='Отправить'></form>");
 		Content("</body></html>");
 		
@@ -98,23 +101,26 @@ void Work(int sock){
 	}
 }
 // ----- HeaderParse -----
-void HeaderParse(char buf[512]){
-	HeaderFirstParse(buf);
-	printf("Method: %s\n",incoming.method);
-	printf("Url: %s\n",incoming.url);
-	printf("HttpVer: %s\n",incoming.httpVer);
-	printf("Host: %s\n",incoming.host);
-	printf("U-A: %s\n",incoming.userAgent);
-	printf("Accept: %s\n",incoming.accept);
-	printf("Accept-Lang: %s\n",incoming.acceptLanguage);
-	printf("Accept-Enc: %s\n",incoming.acceptEncoding);
-	printf("Referer: %s\n",incoming.referer);
-	printf("Connection: %s\n",incoming.connection);
-	printf("Content-Type: %s\n",incoming.contentType);
-	printf("Content-Len: %d\n",incoming.contentLength);
-	printf("CahcheControl: %s\n",incoming.cacheControl);
+void QueryParse(char buf[512]){
+	QueryFirstParse(buf);
+	printf("Method: %s\n",query.method);
+	printf("Url: %s\n",query.url);
+	printf("Get: %s\n",query.get);
+	printf("HttpVer: %s\n",query.httpVer);
+	printf("Host: %s\n",query.host);
+	printf("U-A: %s\n",query.userAgent);
+	printf("Accept: %s\n",query.accept);
+	printf("Accept-Lang: %s\n",query.acceptLanguage);
+	printf("Accept-Enc: %s\n",query.acceptEncoding);
+	printf("Referer: %s\n",query.referer);
+	printf("Connection: %s\n",query.connection);
+	printf("Content-Type: %s\n",query.contentType);
+	printf("Content-Len: %d\n",query.contentLength);
+	printf("CahcheControl: %s\n",query.cacheControl);
+	printf("Cookie: %s\n",query.cookie);
+	printf("Post: %s\n",query.post);
 }
-void HeaderFirstParse(char buf[512]){
+void QueryFirstParse(char buf[512]){
 	char* pBegin = buf;
 	char* pEnd = buf;
 	int count = 0;
@@ -125,57 +131,58 @@ void HeaderFirstParse(char buf[512]){
 		if(pEnd)
 			*(pEnd) = '\0';
 		else{
-			pEnd = strstr(pBegin,"\n");
-			if(pEnd){
+			int len = strlen(pBegin);
+			if(len > 0){
+				pEnd = pBegin + len;
 				*(pEnd) = '\0';
+				//printf("----\nFOUND!: %s\n----\n", pBegin);
+				strcpy(query.post, pBegin);
 			}
-			else{
-				int len = strlen(pBegin);
-				if(len > 0)
-					pEnd = pBegin + len;
-				else
-					break;
-			}
+			else
+				break;
 		}
 		//printf("Str%d: %s\n", count, pBegin);
-		HeaderSecondParse(pBegin);
+		QuerySecondParse(pBegin);
 		pBegin = pEnd+2;
 		count++;
 	}
 }
-void HeaderSecondParse(char* str){
+void QuerySecondParse(char* str){
 	if(strstr(str,"HTTP")){
-		sscanf(str,"%s %s HTTP/%s",incoming.method,incoming.url,incoming.httpVer);
-
+		sscanf(str,"%s %s HTTP/%s",query.method,query.url,query.httpVer);
+		char* get = strstr(query.url, "?");
+		if(get != NULL){
+			strcpy(query.get, get+1);
+		}
 	}
 	if(strstr(str,"Host:")){
-		sscanf(str,"Host: %s",incoming.host);
+		strcpy(query.host, str+6);
 	}
 	else if(strstr(str,"User-Agent:")){
-		strcpy(incoming.userAgent, str+11);
+		strcpy(query.userAgent, str+12);
 	}
 	else if(strstr(str,"Accept:")){
-		strcpy(incoming.accept, str+7);
+		strcpy(query.accept, str+8);
 	}
 	else if(strstr(str,"Accept-Language:")){
-		strcpy(incoming.acceptLanguage, str+16);
+		strcpy(query.acceptLanguage, str+17);
 	}
 	else if(strstr(str,"Accept-Encoding:")){
-		strcpy(incoming.acceptEncoding, str+16);
+		strcpy(query.acceptEncoding, str+17);
 	}
 	else if(strstr(str,"Referer:")){
-		sscanf(str,"Referer: %s",incoming.referer);
+		strcpy(query.referer, str+9);
 	}
 	else if(strstr(str,"Connection:")){
-		sscanf(str,"Connection: %s",incoming.connection);
+		strcpy(query.connection, str+12);
 	}
 	else if(strstr(str,"Content-Type:")){
-		sscanf(str,"Content-Type: %s",incoming.contentType);
+		strcpy(query.contentType, str+14);
 	}
 	else if(strstr(str,"Content-Length:")){
-		sscanf(str,"Content-Length: %d",&incoming.contentLength);
+		sscanf(str,"Content-Length: %d",&query.contentLength);
 	}
 	else if(strstr(str,"Cache-Control:")){
-		sscanf(str,"Cache-Control: %s",incoming.cacheControl);
+		strcpy(query.cacheControl, str+15);
 	}
 }
