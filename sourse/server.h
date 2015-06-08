@@ -3,6 +3,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -14,9 +15,48 @@
 #define Header(...) {sprintf(tmp,__VA_ARGS__);strcat(header,tmp);}
 #define Content(...) {sprintf(tmp,__VA_ARGS__);strcat(content,tmp);}
 
+#define TRUE 1
+#define FALSE 0
+typedef unsigned short bool;
+
+// ----- Conf -----
+
+#define CONF_DEFAULT_PATH "../config/httpd.conf.default"
+#define CONF_PATH "../config/httpd.conf"
+
+struct conf_s{
+	char servName[MAX_STRING_LEN];
+	unsigned int port;
+	char servDir[MAX_STRING_LEN];
+	char logsDir[MAX_STRING_LEN];
+	char servDocs[MAX_STRING_LEN];
+	char allLogs[MAX_STRING_LEN];
+	char allLogsPath[MAX_STRING_LEN];
+	char connectsLogs[MAX_STRING_LEN];
+	char connectsLogsPath[MAX_STRING_LEN];
+
+	char adminEmail[MAX_STRING_LEN];
+
+	bool rewriteEngine;
+	bool comit;
+};
+
+typedef struct conf_s conf_t;
+
+void Conf();
+void ConfParse(char filepath[MAX_STRING_LEN]);
+
+conf_t conf;
+
+// ----- Logs -----
+
+void AddLog(char type[MAX_STRING_LEN], char msg[MAX_STRING_LEN]);
+void ViewLogs();
+void DropLogs();
+
 // ----- Server -----
 
-struct query_s {
+struct request_s {
 	char method[8];
 	char url[64];
 	char get[64];
@@ -35,42 +75,20 @@ struct query_s {
 	char post[64];
 };
 
-typedef struct query_s query_t;
+typedef struct request_s request_t;
+request_t request;
 
 int main(void);
 void Work(int sock);
-void QueryParse(char buf[512]);
-void QueryFirstParse(char buf[512]);
-void QuerySecondParse(char* str);
+void ChildProcess();
 
-// ----- Conf -----
+// ----- Request Parse -----
 
-#define CONF_DEFAULT_PATH "../config/httpd.conf.default"
-#define CONF_PATH "../config/httpd.conf"
+void RequestParse(char buf[512]);
+void RequestFirstParse(char buf[512]);
+void RequestSecondParse(char* str);
 
-struct conf_s{
-	char servName[MAX_STRING_LEN];
-	int port;
-	char servDir[MAX_STRING_LEN];
-	char logsDir[MAX_STRING_LEN];
-	char servDocs[MAX_STRING_LEN];
-	char errDocs[MAX_STRING_LEN];
+// ----- Response -----
 
-	char adminEmail[MAX_STRING_LEN];
-};
 
-typedef struct conf_s conf_t;
-
-void Conf();
-void ConfParse(char filepath[MAX_STRING_LEN]);
-
-conf_t conf;
-
-// ----- Logs -----
-
-#define ALL_LOGS "../logs/all.log"
-#define CONNECTS "../logs/connects.log"
-
-void AddLog(char type[MAX_STRING_LEN], char msg[MAX_STRING_LEN]);
-void ViewLogs();
-void DropLogs();
+//void sendNotFound(int sockfd);

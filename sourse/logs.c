@@ -9,9 +9,9 @@
 void AddLog(char type[MAX_STRING_LEN], char msg[MAX_STRING_LEN]){
 	char str[MAX_STRING_LEN];
 	sprintf(str, "%s: %s\n", type, msg);
-	FILE *file = fopen(ALL_LOGS,"a");
+	FILE *file = fopen(conf.allLogs,"a");
 	if(file == NULL){
-		printf("Не могу открыть файл ALL_LOG :(\n");
+		printf("Не могу открыть файл %s :(\n", conf.allLogsPath);
 	}
 	else{
 		fprintf(file, str);
@@ -25,9 +25,9 @@ void AddLog(char type[MAX_STRING_LEN], char msg[MAX_STRING_LEN]){
 
 void ViewLogs(){
 	char str[MAX_STRING_LEN];
-	FILE *file = fopen(ALL_LOGS,"r");
+	FILE *file = fopen(conf.allLogs,"r");
 	if(file == NULL){
-		AddLog("Error","Не могу открыть файл ALL_LOG");
+		AddLog("Error","Не могу открыть файл логов");
 	}
 	else{
 		while(fgets(str,sizeof(str),file)){
@@ -38,9 +38,9 @@ void ViewLogs(){
 }
 
 void DropLogs(){
-	FILE *file = fopen(ALL_LOGS,"wb");
+	FILE *file = fopen(conf.allLogs,"wb");
 	if(file == NULL){
-		AddLog("Error","Не могу открыть файл ALL_LOG");
+		AddLog("Error","Не могу открыть файл логов");
 	}
 	else{
 		fclose(file);
